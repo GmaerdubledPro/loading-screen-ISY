@@ -132,13 +132,27 @@
         }
 
         // Fonction qui calcule le pourcentage pour agrandir la barre
+        // Fonction qui calcule le pourcentage pour agrandir la barre
         function UpdateProgress() {
             if (filesTotal > 0) {
                 var downloaded = filesTotal - filesNeeded;
                 var percentage = (downloaded / filesTotal) * 100;
                 
+                var bar = document.getElementById("loading-bar");
+                
                 // On met à jour la largeur de la barre (en %)
-                document.getElementById("loading-bar").style.width = percentage + "%";
+                bar.style.width = percentage + "%";
+                
+                // --- NOUVEAU : CHANGEMENT DE COULEUR ---
+                if (percentage < 33) {
+                    bar.style.backgroundColor = "#ff4757"; // Rouge au début
+                } else if (percentage < 66) {
+                    bar.style.backgroundColor = "#ffa502"; // Orange au milieu
+                } else if (percentage < 90) {
+                    bar.style.backgroundColor = "#1e90ff"; // Bleu vers la fin
+                } else {
+                    bar.style.backgroundColor = "#2ed573"; // Vert quand c'est presque fini
+                }
             }
         }
     </script>
