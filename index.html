@@ -131,28 +131,34 @@
             document.getElementById("loading-text").innerText = status;
         }
 
-        // Fonction qui calcule le pourcentage pour agrandir la barre
-        // Fonction qui calcule le pourcentage pour agrandir la barre
+       // Fonction qui calcule le pourcentage pour agrandir la barre
         function UpdateProgress() {
             if (filesTotal > 0) {
                 var downloaded = filesTotal - filesNeeded;
                 var percentage = (downloaded / filesTotal) * 100;
                 
                 var bar = document.getElementById("loading-bar");
+                var container = document.getElementById("loading-container");
                 
                 // On met à jour la largeur de la barre (en %)
                 bar.style.width = percentage + "%";
                 
-                // --- NOUVEAU : CHANGEMENT DE COULEUR ---
-                if (percentage < 33) {
-                    bar.style.backgroundColor = "#ff4757"; // Rouge au début
-                } else if (percentage < 66) {
-                    bar.style.backgroundColor = "#ffa502"; // Orange au milieu
-                } else if (percentage < 90) {
-                    bar.style.backgroundColor = "#1e90ff"; // Bleu vers la fin
-                } else {
-                    bar.style.backgroundColor = "#2ed573"; // Vert quand c'est presque fini
-                }
+                // --- TRANSITION FLUIDE : PARADIS (Bleu clair) vers ENFER (Rouge vif) ---
+                // Code RGB de base (Bleu Angélique) : r=100, g=200, b=255
+                // Code RGB de fin (Rouge Démoniaque) : r=255, g=0, b=0
+                
+                var r = Math.round(100 + (155 * (percentage / 100))); // Monte vers 255
+                var g = Math.round(200 - (200 * (percentage / 100))); // Descend vers 0
+                var b = Math.round(255 - (255 * (percentage / 100))); // Descend vers 0
+                
+                var currentColor = "rgb(" + r + "," + g + "," + b + ")";
+                
+                // On applique la couleur à la barre
+                bar.style.backgroundColor = currentColor;
+                
+                // BONUS : On applique aussi la couleur à la bordure et au halo lumineux !
+                container.style.borderColor = currentColor;
+                container.style.boxShadow = "0px 0px 15px rgba(" + r + ", " + g + ", " + b + ", 0.5)";
             }
         }
     </script>
