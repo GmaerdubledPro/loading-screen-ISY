@@ -223,9 +223,12 @@
 
         function SetFilesNeeded( needed ) {
             filesNeeded = needed;
-            if (filesTotal > 0 && currentPercentage < 60) {
+            if (filesTotal > 0) {
                 var calcul = (filesTotal - filesNeeded) / filesTotal;
-                currentPercentage = calcul * 60;
+                var targetPercentage = calcul * 60; // Max 60% pour les premiers fichiers
+                
+                // RÈGLE D'OR : Le pourcentage actuel ne peut jamais diminuer
+                currentPercentage = Math.max(currentPercentage, targetPercentage);
             }
             UpdateBar();
         }
@@ -241,12 +244,16 @@
                 
                 if (total > 0 && downloaded <= total) {
                     var calcul = downloaded / total; 
+                    var targetPercentage = 0;
                     
                     if (status.toLowerCase().includes("lua")) {
-                        currentPercentage = 60 + (calcul * 20);
+                        targetPercentage = 60 + (calcul * 20); // Lua = 60% à 80%
                     } else {
-                        currentPercentage = calcul * 60;
+                        targetPercentage = calcul * 60; // Reste = 0% à 60%
                     }
+
+                    // RÈGLE D'OR : On empêche la barre de reculer, on garde le plus haut
+                    currentPercentage = Math.max(currentPercentage, targetPercentage);
                 }
             } 
             else if (status === "Sending client info...") {
@@ -255,14 +262,13 @@
                 currentPercentage = Math.max(currentPercentage, 95);
             } else if (status === "Lua Started!") {
                 currentPercentage = 100; 
-            } else if (filesTotal === 0 && currentPercentage < 50) {
-                currentPercentage += 2; 
             }
             
             UpdateBar(); 
         }
 
         function UpdateBar() {
+            // Sécurité globale
             currentPercentage = Math.max(0, Math.min(100, currentPercentage));
             
             var bar = document.getElementById("loading-bar");
