@@ -12,7 +12,7 @@
             font-family: 'Trebuchet MS', Arial, sans-serif;
             background-color: #1e1e1e;
             
-            /* REMET TON LIEN D'IMAGE ICI */
+            /* L'image de fond qui doit être hébergée avec ton code */
             background-image: url('fond.jpg');
             background-size: cover;
             background-position: center;
@@ -75,13 +75,13 @@
             width: 0%; 
             background-color: #00a8ff;
             border-radius: 5px;
-            /* L'animation est passée de 0.3s à 0.1s pour du vrai temps réel ! */
+            /* Animation ultra-fluide (0.1s) pour suivre les chiffres en direct */
             transition: width 0.1s linear, background-color 0.2s ease; 
         }
 
        #loading-text {
             position: absolute;
-            bottom: 85px; 
+            bottom: 85px; /* Place le texte juste en dessous de la barre */
             font-size: 20px;
             font-weight: bold;
             color: #ffffff;
@@ -93,6 +93,7 @@
 
     <h1>I SEEK YOU</h1>
     
+    <!-- LA BOÎTE DE TEXTE DU LORE -->
     <div class="lore-box">
         <p class="lore-title">🔥 ANGES VS DÉMONS – HELL & HEAVEN 🔥</p>
         <p>Dans cette guerre éternelle entre le Paradis et l’Enfer, deux camps s’affrontent.</p>
@@ -100,76 +101,95 @@
         <p>Chasse ou sois chassé. 😇 ⚖️ Que le jugement commence.</p>
     </div>
     
+    <!-- CONTENEUR DE LA BARRE -->
     <div id="loading-container">
         <div id="loading-bar"></div>
     </div>
     
+    <!-- TEXTE QUI CHANGERA TOUT SEUL EN DIRECT -->
     <div id="loading-text">Connexion au serveur...</div>
 
     <script>
         // =========================================================
-        // SCRIPTS GARRY'S MOD (Synchronisation du téléchargement)
+        // SCRIPTS GARRY'S MOD (Synchronisation et Logique Avancée)
         // =========================================================
         var filesTotal = 0;
         var filesNeeded = 0;
         var currentPercentage = 0; 
 
+        // 1. Gmod annonce le nombre de fichiers
         function SetFilesTotal( total ) {
             filesTotal = total;
         }
 
+        // 2. Gmod télécharge les fichiers (méthode de secours)
         function SetFilesNeeded( needed ) {
             filesNeeded = needed;
-            if (filesTotal > 0) {
-                currentPercentage = ((filesTotal - filesNeeded) / filesTotal) * 100;
+            if (filesTotal > 0 && currentPercentage < 60) {
+                var calcul = (filesTotal - filesNeeded) / filesTotal;
+                currentPercentage = calcul * 60;
             }
             UpdateBar();
         }
 
-        // 3. Gmod change de statut
+        // 3. Gmod change de statut (Méthode principale de lecture en direct)
         function SetStatusChanged( status ) {
             document.getElementById("loading-text").innerText = status;
             
-            // --- NOUVEAU : ON LIT LE TEXTE EN DIRECT (ex: "917/5064") ---
-            var match = status.match(/^(\d+)\/(\d+)/);
+            // On lit tous les formats en direct (ex: "917/5064" ou "1 of 882")
+            var match = status.match(/(\d+)\s*(?:\/|of)\s*(\d+)/i);
+            
             if (match) {
                 var downloaded = parseInt(match[1]);
                 var total = parseInt(match[2]);
-                if (total > 0) {
-                    currentPercentage = (downloaded / total) * 100;
+                
+                if (total > 0 && downloaded <= total) {
+                    var calcul = downloaded / total; 
+                    
+                    // DÉCOUPAGE INTELLIGENT POUR EMPÊCHER LE RETOUR EN ARRIÈRE :
+                    if (status.toLowerCase().includes("lua")) {
+                        // Phase LUA : la barre progresse entre 60% et 80%
+                        currentPercentage = 60 + (calcul * 20);
+                    } else {
+                        // Phase Matériels/Models/Workshop : la barre progresse de 0% à 60%
+                        currentPercentage = calcul * 60;
+                    }
                 }
             } 
             // ÉTAPES DE FIN DE CHARGEMENT :
             else if (status === "Sending client info...") {
-                currentPercentage = Math.max(currentPercentage, 80);
+                currentPercentage = Math.max(currentPercentage, 85);
             } else if (status === "Starting Lua...") {
-                currentPercentage = Math.max(currentPercentage, 90);
+                currentPercentage = Math.max(currentPercentage, 95);
             } else if (status === "Lua Started!") {
-                currentPercentage = 100; 
+                currentPercentage = 100; // Fin ! Rouge démoniaque total
             } else if (filesTotal === 0 && currentPercentage < 50) {
+                // Petite sécurité si rien ne bouge au tout début
                 currentPercentage += 2; 
             }
             
             UpdateBar(); 
         }
 
-        // 4. Fonction qui dessine la barre et gère les couleurs
+        // 4. Fonction qui dessine la barre et gère le dégradé de couleurs
         function UpdateBar() {
-            // Sécurité : on garde le pourcentage entre 0 et 100
+            // Sécurité : on bloque le pourcentage strictement entre 0 et 100
             currentPercentage = Math.max(0, Math.min(100, currentPercentage));
             
             var bar = document.getElementById("loading-bar");
             var container = document.getElementById("loading-container");
             
+            // Mise à jour de la largeur de la barre
             bar.style.width = currentPercentage + "%";
             
             // --- TRANSITION FLUIDE : PARADIS (Bleu clair) vers ENFER (Rouge vif) ---
-            var r = Math.round(100 + (155 * (currentPercentage / 100)));
-            var g = Math.round(200 - (200 * (currentPercentage / 100)));
-            var b = Math.round(255 - (255 * (currentPercentage / 100)));
+            var r = Math.round(100 + (155 * (currentPercentage / 100))); // Monte vers 255
+            var g = Math.round(200 - (200 * (currentPercentage / 100))); // Descend vers 0
+            var b = Math.round(255 - (255 * (currentPercentage / 100))); // Descend vers 0
             
             var currentColor = "rgb(" + r + "," + g + "," + b + ")";
             
+            // Application des couleurs à la barre, la bordure et le halo lumineux
             bar.style.backgroundColor = currentColor;
             container.style.borderColor = currentColor;
             container.style.boxShadow = "0px 0px 15px rgba(" + r + ", " + g + ", " + b + ", 0.5)";
