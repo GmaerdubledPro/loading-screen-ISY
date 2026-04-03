@@ -197,7 +197,7 @@
 
     <script>
         // =========================================================
-        // SCRIPTS GARRY'S MOD : SYSTÈME DE VAGUES INTELLIGENT
+        // SCRIPTS GARRY'S MOD : SYSTÈME DE VAGUES ÉQUILIBRÉ
         // =========================================================
         var filesTotal = 0;
         var filesNeeded = 0;
@@ -206,51 +206,48 @@
         var currentPercentage = parseFloat(sessionStorage.getItem("gmod_progress")) || 0;
         var lastTotal = parseInt(sessionStorage.getItem("gmod_lastTotal")) || 0;
         var basePercent = parseFloat(sessionStorage.getItem("gmod_basePercent")) || 0;
-        var maxPercent = parseFloat(sessionStorage.getItem("gmod_maxPercent")) || 60;
+        
+        // MODIFICATION ICI : On donne seulement 35% au Workshop pour laisser de la place au reste !
+        var maxPercent = parseFloat(sessionStorage.getItem("gmod_maxPercent")) || 35; 
 
         // Si le joueur avait fini son chargement la dernière fois (100%), on réinitialise tout
-        if (currentPercentage >= 100) {
+        if (currentPercentage >= 100 || isNaN(currentPercentage)) {
             currentPercentage = 0;
             lastTotal = 0;
             basePercent = 0;
-            maxPercent = 60;
+            maxPercent = 35; 
             sessionStorage.clear();
         }
 
         // --- LA FONCTION MAGIQUE QUI GÈRE LES MULTIPLES VAGUES ---
         function processDownload(downloaded, total) {
             if (total > 0) {
-                // Si le total change (ex: de 5064 à 3002), on détecte une NOUVELLE vague
+                // Si le total change (ex: on passe du Workshop au FastDL), on crée une nouvelle tranche
                 if (total !== lastTotal) {
                     if (lastTotal !== 0) {
-                        // On prend le % actuel comme nouveau point de départ
                         basePercent = currentPercentage;
-                        // On lui donne une bonne partie de l'espace vide restant jusqu'à 85%
-                        maxPercent = basePercent + ((85 - basePercent) / 1.5); 
+                        // On calcule le nouvel espace disponible de façon beaucoup plus douce (jusqu'à 90%)
+                        maxPercent = basePercent + ((90 - basePercent) / 1.8); 
                     }
                     lastTotal = total;
                     
-                    // On sauvegarde les paliers en mémoire
                     sessionStorage.setItem("gmod_lastTotal", lastTotal);
                     sessionStorage.setItem("gmod_basePercent", basePercent);
                     sessionStorage.setItem("gmod_maxPercent", maxPercent);
                 }
                 
-                // Calcul de la progression de la vague actuelle
                 var calcul = downloaded / total; 
                 var targetPercentage = basePercent + (calcul * (maxPercent - basePercent));
                 
-                // Règle d'or : On ne recule JAMAIS
+                // On ne recule jamais
                 currentPercentage = Math.max(currentPercentage, targetPercentage);
             }
         }
 
-        // Fonction d'arrière-plan Gmod
         function SetFilesTotal( total ) {
             filesTotal = total;
         }
 
-        // Fonction d'arrière-plan Gmod
         function SetFilesNeeded( needed ) {
             filesNeeded = needed;
             if (filesTotal > 0) {
@@ -259,11 +256,9 @@
             UpdateBar();
         }
 
-        // Fonction de lecture de texte Gmod (La plus précise)
         function SetStatusChanged( status ) {
             document.getElementById("loading-text").innerText = status;
             
-            // On cherche le "X / Y" ou "X of Y" dans le texte
             var match = status.match(/(\d+)\s*(?:\/|of)\s*(\d+)/i);
             
             if (match) {
@@ -278,18 +273,16 @@
             } else if (status === "Starting Lua...") {
                 currentPercentage = Math.max(currentPercentage, 92);
             } else if (status === "Lua Started!") {
-                currentPercentage = 100; // Fin ! Rouge complet
+                currentPercentage = 100; 
             }
             
             UpdateBar(); 
         }
 
-        // Affichage visuel et Couleurs
         function UpdateBar() {
             if (isNaN(currentPercentage)) currentPercentage = 0;
             currentPercentage = Math.max(0, Math.min(100, currentPercentage));
             
-            // Sauvegarde de l'avancement global en direct
             sessionStorage.setItem("gmod_progress", currentPercentage);
             
             var bar = document.getElementById("loading-bar");
