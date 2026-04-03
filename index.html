@@ -61,7 +61,7 @@
         /* --- STYLES DE LA BARRE DE CHARGEMENT --- */
         #loading-container {
             position: absolute;
-            bottom: 120px; /* On la place à 120px du bas pour éviter de toucher la barre Gmod par défaut */
+            bottom: 120px; 
             width: 50%;
             background-color: rgba(0, 0, 0, 0.6);
             border: 2px solid #00a8ff;
@@ -72,15 +72,16 @@
 
         #loading-bar {
             height: 25px;
-            width: 0%; /* Ça commencera à 0% */
+            width: 0%; 
             background-color: #00a8ff;
             border-radius: 5px;
-            transition: width 0.3s ease; /* Animation fluide quand la barre avance */
+            /* L'animation est passée de 0.3s à 0.1s pour du vrai temps réel ! */
+            transition: width 0.1s linear, background-color 0.2s ease; 
         }
 
        #loading-text {
             position: absolute;
-            bottom: 85px; /* Place le texte juste en dessous de la barre (qui est à 120px) */
+            bottom: 85px; 
             font-size: 20px;
             font-weight: bold;
             color: #ffffff;
@@ -92,7 +93,6 @@
 
     <h1>I SEEK YOU</h1>
     
-    <!-- LA NOUVELLE BOÎTE DE TEXTE -->
     <div class="lore-box">
         <p class="lore-title">🔥 ANGES VS DÉMONS – HELL & HEAVEN 🔥</p>
         <p>Dans cette guerre éternelle entre le Paradis et l’Enfer, deux camps s’affrontent.</p>
@@ -100,12 +100,10 @@
         <p>Chasse ou sois chassé. 😇 ⚖️ Que le jugement commence.</p>
     </div>
     
-    <!-- CONTENEUR DE LA BARRE -->
     <div id="loading-container">
         <div id="loading-bar"></div>
     </div>
     
-    <!-- TEXTE QUI CHANGERA TOUT SEUL (Ex: Téléchargement de map...) -->
     <div id="loading-text">Connexion au serveur...</div>
 
     <script>
@@ -114,40 +112,45 @@
         // =========================================================
         var filesTotal = 0;
         var filesNeeded = 0;
-        var currentPercentage = 0; // On stocke le pourcentage globalement
+        var currentPercentage = 0; 
 
-        // 1. Gmod annonce le nombre de fichiers
         function SetFilesTotal( total ) {
             filesTotal = total;
         }
 
-        // 2. Gmod télécharge les fichiers
         function SetFilesNeeded( needed ) {
             filesNeeded = needed;
             if (filesTotal > 0) {
-                // Calcul normal du pourcentage si on télécharge
                 currentPercentage = ((filesTotal - filesNeeded) / filesTotal) * 100;
             }
             UpdateBar();
         }
 
-        // 3. Gmod change de statut ("Connexion...", "Lua Started!"...)
+        // 3. Gmod change de statut
         function SetStatusChanged( status ) {
             document.getElementById("loading-text").innerText = status;
             
-            // FORCAGE DE LA BARRE POUR LES ÉTAPES DE FIN :
-            if (status === "Sending client info...") {
-                currentPercentage = 75;
+            // --- NOUVEAU : ON LIT LE TEXTE EN DIRECT (ex: "917/5064") ---
+            var match = status.match(/^(\d+)\/(\d+)/);
+            if (match) {
+                var downloaded = parseInt(match[1]);
+                var total = parseInt(match[2]);
+                if (total > 0) {
+                    currentPercentage = (downloaded / total) * 100;
+                }
+            } 
+            // ÉTAPES DE FIN DE CHARGEMENT :
+            else if (status === "Sending client info...") {
+                currentPercentage = Math.max(currentPercentage, 80);
             } else if (status === "Starting Lua...") {
-                currentPercentage = 90;
+                currentPercentage = Math.max(currentPercentage, 90);
             } else if (status === "Lua Started!") {
-                currentPercentage = 100; // Fin ! La barre sera 100% Rouge
+                currentPercentage = 100; 
             } else if (filesTotal === 0 && currentPercentage < 50) {
-                // Si le joueur a déjà les fichiers, on fait avancer la barre artificiellement au début
-                currentPercentage += 5; 
+                currentPercentage += 2; 
             }
             
-            UpdateBar(); // On met à jour l'affichage
+            UpdateBar(); 
         }
 
         // 4. Fonction qui dessine la barre et gère les couleurs
@@ -158,7 +161,6 @@
             var bar = document.getElementById("loading-bar");
             var container = document.getElementById("loading-container");
             
-            // Mise à jour de la largeur
             bar.style.width = currentPercentage + "%";
             
             // --- TRANSITION FLUIDE : PARADIS (Bleu clair) vers ENFER (Rouge vif) ---
@@ -168,7 +170,6 @@
             
             var currentColor = "rgb(" + r + "," + g + "," + b + ")";
             
-            // Application des couleurs
             bar.style.backgroundColor = currentColor;
             container.style.borderColor = currentColor;
             container.style.boxShadow = "0px 0px 15px rgba(" + r + ", " + g + ", " + b + ", 0.5)";
