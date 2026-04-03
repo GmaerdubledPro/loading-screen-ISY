@@ -78,11 +78,13 @@
             transition: width 0.3s ease; /* Animation fluide quand la barre avance */
         }
 
-        #loading-text {
-            margin-top: 15px;
+       #loading-text {
+            position: absolute;
+            bottom: 85px; /* Place le texte juste en dessous de la barre (qui est à 120px) */
             font-size: 20px;
             font-weight: bold;
             color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,1);
         }
     </style>
 </head>
