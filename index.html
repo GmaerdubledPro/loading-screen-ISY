@@ -23,26 +23,37 @@
             justify-content: center;
             align-items: center;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            overflow: hidden; /* Empêche les barres de défilement */
         }
 
+        /* --- TITRE (Remonté en haut) --- */
         h1 {
+            position: absolute;
+            top: 5%; /* Place le titre en haut de l'écran */
             font-size: 60px;
-            margin-bottom: 10px;
+            margin: 0;
             color: #00a8ff;
+            text-shadow: 3px 3px 6px rgba(0,0,0,1);
         }
 
-        p {
-            font-size: 24px;
+        /* --- ORGANISATION CENTRALE (Pour séparer le Lore et le Staff) --- */
+        .content-wrapper {
+            display: flex;
+            justify-content: center; /* Centre le contenu global */
+            align-items: center;
+            width: 90%;
+            max-width: 1400px;
+            gap: 50px; /* Espace entre le lore et le staff */
+            margin-top: -50px; /* Remonte un peu l'ensemble */
         }
 
-        /* --- STYLE DE LA BOÎTE DE TEXTE --- */
+        /* --- STYLE DE LA BOÎTE DE TEXTE (Centrée) --- */
         .lore-box {
-            max-width: 800px;
+            max-width: 700px;
             background-color: rgba(0, 0, 0, 0.4);
             padding: 20px 40px;
             border-radius: 10px;
-            border-left: 4px solid #00a8ff;
-            margin-bottom: 50px; /* Espace entre le texte et la barre */
+            border-left: 4px solid #00a8ff; /* Liseré Bleu (Anges) */
             text-align: center;
             line-height: 1.6;
         }
@@ -56,6 +67,63 @@
             color: #ff9f43;
             font-weight: bold;
             font-size: 26px;
+        }
+
+        /* --- ZONE STAFF (À droite) --- */
+        .staff-box {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px 30px;
+            border-radius: 10px;
+            border-right: 4px solid #ff4757; /* Liseré Rouge (Démons) */
+            min-width: 250px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .staff-box h3 {
+            text-align: center;
+            margin-top: 0;
+            color: #ffffff;
+            font-size: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .staff-member {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+
+        .staff-member:last-child {
+            margin-bottom: 0; /* Enlève la marge du dernier pour que ce soit propre */
+        }
+
+        .staff-member img {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            border: 2px solid #ffffff; /* Bordure des photos de profil */
+            object-fit: cover;
+        }
+
+        .staff-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .staff-name {
+            font-weight: bold;
+            font-size: 18px;
+            color: #00a8ff;
+        }
+
+        .staff-role {
+            font-size: 14px;
+            color: #bdc3c7;
+            font-style: italic;
         }
 
         /* --- STYLES DE LA BARRE DE CHARGEMENT --- */
@@ -75,13 +143,12 @@
             width: 0%; 
             background-color: #00a8ff;
             border-radius: 5px;
-            /* Animation ultra-fluide (0.1s) pour suivre les chiffres en direct */
             transition: width 0.1s linear, background-color 0.2s ease; 
         }
 
        #loading-text {
             position: absolute;
-            bottom: 85px; /* Place le texte juste en dessous de la barre */
+            bottom: 85px; 
             font-size: 20px;
             font-weight: bold;
             color: #ffffff;
@@ -91,15 +158,48 @@
 </head>
 <body>
 
+    <!-- LE TITRE EN HAUT -->
     <h1>I SEEK YOU</h1>
     
-    <!-- LA BOÎTE DE TEXTE DU LORE -->
-    <div class="lore-box">
-        <p class="lore-title">🔥 ANGES VS DÉMONS – HELL & HEAVEN 🔥</p>
-        <p>Dans cette guerre éternelle entre le Paradis et l’Enfer, deux camps s’affrontent.</p>
-        <p>Les Démons traquent sans pitié. Les Anges, transformés en objets, doivent se cacher pour survivre. 😈</p>
-        <p>Chasse ou sois chassé. 😇 ⚖️ Que le jugement commence.</p>
-    </div>
+    <!-- LE CONTENEUR CENTRAL (Lore + Staff) -->
+    <div class="content-wrapper">
+        
+        <!-- LA BOÎTE DE TEXTE DU LORE -->
+        <div class="lore-box">
+            <p class="lore-title">🔥 ANGES VS DÉMONS – HELL & HEAVEN 🔥</p>
+            <p>Dans cette guerre éternelle entre le Paradis et l’Enfer, deux camps s’affrontent.</p>
+            <p>Les Démons traquent sans pitié. Les Anges, transformés en objets, doivent se cacher pour survivre. 😈</p>
+            <p>Chasse ou sois chassé. 😇 ⚖️ Que le jugement commence.</p>
+        </div>
+
+        <!-- LA NOUVELLE ZONE STAFF -->
+        <div class="staff-box">
+            <h3>L'Équipe</h3>
+            
+            <!-- Membre 1 -->
+            <div class="staff-member">
+                <!-- Remplace le lien 'src' par le lien de l'avatar Steam -->
+                <img src="https://avatars.cloudflare.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg" alt="Avatar">
+                <div class="staff-info">
+                    <span class="staff-name">TonPseudo</span>
+                    <span class="staff-role" style="color: #ff4757;">Fondateur</span>
+                </div>
+            </div>
+
+            <!-- Membre 2 -->
+            <div class="staff-member">
+                <img src="https://avatars.cloudflare.steamstatic.com/b5bd56c1aa4644a474a2e4972be27ef9e82e517e_full.jpg" alt="Avatar">
+                <div class="staff-info">
+                    <span class="staff-name">AdminPseudo</span>
+                    <span class="staff-role" style="color: #00a8ff;">Administrateur</span>
+                </div>
+            </div>
+
+            <!-- Tu peux copier-coller le bloc "Membre" pour en ajouter d'autres ! -->
+            
+        </div>
+
+    </div> <!-- Fin du conteneur central -->
     
     <!-- CONTENEUR DE LA BARRE -->
     <div id="loading-container">
@@ -117,12 +217,10 @@
         var filesNeeded = 0;
         var currentPercentage = 0; 
 
-        // 1. Gmod annonce le nombre de fichiers
         function SetFilesTotal( total ) {
             filesTotal = total;
         }
 
-        // 2. Gmod télécharge les fichiers (méthode de secours)
         function SetFilesNeeded( needed ) {
             filesNeeded = needed;
             if (filesTotal > 0 && currentPercentage < 60) {
@@ -132,11 +230,9 @@
             UpdateBar();
         }
 
-        // 3. Gmod change de statut (Méthode principale de lecture en direct)
         function SetStatusChanged( status ) {
             document.getElementById("loading-text").innerText = status;
             
-            // On lit tous les formats en direct (ex: "917/5064" ou "1 of 882")
             var match = status.match(/(\d+)\s*(?:\/|of)\s*(\d+)/i);
             
             if (match) {
@@ -146,50 +242,40 @@
                 if (total > 0 && downloaded <= total) {
                     var calcul = downloaded / total; 
                     
-                    // DÉCOUPAGE INTELLIGENT POUR EMPÊCHER LE RETOUR EN ARRIÈRE :
                     if (status.toLowerCase().includes("lua")) {
-                        // Phase LUA : la barre progresse entre 60% et 80%
                         currentPercentage = 60 + (calcul * 20);
                     } else {
-                        // Phase Matériels/Models/Workshop : la barre progresse de 0% à 60%
                         currentPercentage = calcul * 60;
                     }
                 }
             } 
-            // ÉTAPES DE FIN DE CHARGEMENT :
             else if (status === "Sending client info...") {
                 currentPercentage = Math.max(currentPercentage, 85);
             } else if (status === "Starting Lua...") {
                 currentPercentage = Math.max(currentPercentage, 95);
             } else if (status === "Lua Started!") {
-                currentPercentage = 100; // Fin ! Rouge démoniaque total
+                currentPercentage = 100; 
             } else if (filesTotal === 0 && currentPercentage < 50) {
-                // Petite sécurité si rien ne bouge au tout début
                 currentPercentage += 2; 
             }
             
             UpdateBar(); 
         }
 
-        // 4. Fonction qui dessine la barre et gère le dégradé de couleurs
         function UpdateBar() {
-            // Sécurité : on bloque le pourcentage strictement entre 0 et 100
             currentPercentage = Math.max(0, Math.min(100, currentPercentage));
             
             var bar = document.getElementById("loading-bar");
             var container = document.getElementById("loading-container");
             
-            // Mise à jour de la largeur de la barre
             bar.style.width = currentPercentage + "%";
             
-            // --- TRANSITION FLUIDE : PARADIS (Bleu clair) vers ENFER (Rouge vif) ---
-            var r = Math.round(100 + (155 * (currentPercentage / 100))); // Monte vers 255
-            var g = Math.round(200 - (200 * (currentPercentage / 100))); // Descend vers 0
-            var b = Math.round(255 - (255 * (currentPercentage / 100))); // Descend vers 0
+            var r = Math.round(100 + (155 * (currentPercentage / 100))); 
+            var g = Math.round(200 - (200 * (currentPercentage / 100))); 
+            var b = Math.round(255 - (255 * (currentPercentage / 100))); 
             
             var currentColor = "rgb(" + r + "," + g + "," + b + ")";
             
-            // Application des couleurs à la barre, la bordure et le halo lumineux
             bar.style.backgroundColor = currentColor;
             container.style.borderColor = currentColor;
             container.style.boxShadow = "0px 0px 15px rgba(" + r + ", " + g + ", " + b + ", 0.5)";
