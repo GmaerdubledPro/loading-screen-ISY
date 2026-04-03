@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Chargement Serveur</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Trebuchet MS', Arial, sans-serif;
+            background-color: #1e1e1e;
+            
+            /* REMET TON LIEN D'IMAGE ICI */
+            background-image: url('fond.jpg');
+            background-size: cover;
+            background-position: center;
+            
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        h1 {
+            font-size: 60px;
+            margin-bottom: 10px;
+            color: #00a8ff;
+        }
+
+        p {
+            font-size: 24px;
+        }
+
+        /* --- STYLES DE LA BARRE DE CHARGEMENT --- */
+        #loading-container {
+            position: absolute;
+            bottom: 120px; /* On la place à 120px du bas pour éviter de toucher la barre Gmod par défaut */
+            width: 50%;
+            background-color: rgba(0, 0, 0, 0.6);
+            border: 2px solid #00a8ff;
+            border-radius: 10px;
+            padding: 5px;
+            box-shadow: 0px 0px 15px rgba(0, 168, 255, 0.5);
+        }
+
+        #loading-bar {
+            height: 25px;
+            width: 0%; /* Ça commencera à 0% */
+            background-color: #00a8ff;
+            border-radius: 5px;
+            transition: width 0.3s ease; /* Animation fluide quand la barre avance */
+        }
+
+        #loading-text {
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>MON SERVEUR PROP HUNT</h1>
+    <p>Préparez-vous à vous cacher...</p>
+    
+    <!-- CONTENEUR DE LA BARRE -->
+    <div id="loading-container">
+        <div id="loading-bar"></div>
+    </div>
+    
+    <!-- TEXTE QUI CHANGERA TOUT SEUL (Ex: Téléchargement de map...) -->
+    <div id="loading-text">Connexion au serveur...</div>
+
+    <script>
+        // =========================================================
+        // SCRIPTS GARRY'S MOD (Synchronisation du téléchargement)
+        // =========================================================
+        var filesTotal = 0;
+        var filesNeeded = 0;
+
+        // Gmod appelle cette fonction pour dire combien de fichiers il y a au total
+        function SetFilesTotal( total ) {
+            filesTotal = total;
+        }
+
+        // Gmod appelle cette fonction à chaque fois qu'un fichier est téléchargé
+        function SetFilesNeeded( needed ) {
+            filesNeeded = needed;
+            UpdateProgress();
+        }
+
+        // Gmod appelle cette fonction pour dire ce qu'il fait (Downloading, Sending Client Info...)
+        function SetStatusChanged( status ) {
+            document.getElementById("loading-text").innerText = status;
+        }
+
+        // Fonction qui calcule le pourcentage pour agrandir la barre
+        function UpdateProgress() {
+            if (filesTotal > 0) {
+                var downloaded = filesTotal - filesNeeded;
+                var percentage = (downloaded / filesTotal) * 100;
+                
+                // On met à jour la largeur de la barre (en %)
+                document.getElementById("loading-bar").style.width = percentage + "%";
+            }
+        }
+    </script>
+
+</body>
+</html>
